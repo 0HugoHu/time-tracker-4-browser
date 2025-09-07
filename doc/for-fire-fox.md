@@ -11,4 +11,4 @@ The output directory is `dist_prod_firefox` and you can find a zip file named `t
 
 Also you could visit the sourcecode on GitHub
 
-[sheepzh/timer](https://github.com/sheepzh/timer)
+[0HugoHu/time-tracker-4-browser](https://github.com/0HugoHu/time-tracker-4-browser)

@@ -31,7 +31,7 @@ It is worth mentioning that the release time of each change refers to the time w
 
 ## [3.5.6] - 2025-08-01
 
--   Fixed the scrollbar style conflict with [huaban.com](https://github.com/sheepzh/time-tracker-4-browser/issues/524)
+-   Fixed the scrollbar style conflict with [huaban.com](https://github.com/0HugoHu/time-tracker-4-browser/issues/524)
 -   Added some French and Arabic translations
 -   Upgraded Echarts to v6 with a more modern style
 

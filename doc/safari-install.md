@@ -6,8 +6,8 @@ So please install it **manually**, GG Safari.
 ## 0. Download this repository
 
 ```shell
-git clone https://github.com/sheepzh/timer.git
-cd timer
+git clone https://github.com/0HugoHu/time-tracker-4-browser.git
+cd time-tracker-4-browser
 ```
 
 ## 1. Install tools
@@ -32,7 +32,7 @@ npm run build:safari
 
 Then there will be one folder called **Timer**.
 
-Also, you can download the archived file from [the release page](https://github.com/sheepzh/timer/releases), and unzip it to gain this folder.
+Also, you can download the archived file from [the release page](https://github.com/0HugoHu/time-tracker-4-browser/releases), and unzip it to gain this folder.
 
 2. Convert js bundles to Xcode project
 

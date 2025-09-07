@@ -88,7 +88,7 @@ test("valid virtual host", () => {
     expect(isValidVirtualHost("http://github.com")).toBeFalsy()
     expect(isValidVirtualHost("github.com/")).toBeFalsy()
 
-    expect(isValidVirtualHost("github.com/sheepzh")).toBeTruthy()
+    expect(isValidVirtualHost("github.com/0HugoHu")).toBeTruthy()
     expect(isValidVirtualHost("github.com/**")).toBeTruthy()
     expect(isValidVirtualHost("github.com/*")).toBeTruthy()
     expect(isValidVirtualHost("github.com/*/timer")).toBeTruthy()

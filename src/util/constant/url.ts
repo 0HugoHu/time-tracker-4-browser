@@ -16,17 +16,17 @@ export const EDGE_HOMEPAGE = 'https://microsoftedge.microsoft.com/addons/detail/
 /**
  * @since 0.4.0
  */
-export const SOURCE_CODE_PAGE = 'https://github.com/sheepzh/timer'
+export const SOURCE_CODE_PAGE = 'https://github.com/0HugoHu/time-tracker-4-browser'
 
 /**
  * @since 1.9.4
  */
-export const CHANGE_LOG_PAGE = 'https://github.com/sheepzh/timer/blob/main/CHANGELOG.md'
+export const CHANGE_LOG_PAGE = 'https://github.com/0HugoHu/time-tracker-4-browser/blob/main/CHANGELOG.md'
 
 /**
  * @since 0.0.6
  */
-export const GITHUB_ISSUE_ADD = 'https://github.com/sheepzh/timer/issues/new/choose'
+export const GITHUB_ISSUE_ADD = 'https://github.com/0HugoHu/time-tracker-4-browser/issues/new/choose'
 
 /**
  * Feedback powered by www.wjx.cn
@@ -42,9 +42,9 @@ export const ZH_FEEDBACK_PAGE = 'https://www.wjx.cn/vj/YFWwHUy.aspx'
  */
 export const TU_CAO_PAGE = `https://support.qq.com/products/402895?os=${BROWSER_NAME}&osVersion=${BROWSER_MAJOR_VERSION}&clientVersion=${getVersion()}`
 
-export const PRIVACY_PAGE = 'https://www.wfhg.cc/en/privacy.html'
+export const PRIVACY_PAGE = 'https://hugohu.site/en/privacy.html'
 
-export const LICENSE_PAGE = 'https://github.com/sheepzh/timer/blob/main/LICENSE'
+export const LICENSE_PAGE = 'https://github.com/0HugoHu/time-tracker-4-browser/blob/main/LICENSE'
 
 /**
  * @since 0.9.6
@@ -92,7 +92,7 @@ export function getAppPageUrl(route?: string, query?: any): string {
     return url
 }
 
-export const HOMEPAGE = "https://www.wfhg.cc"
+export const HOMEPAGE = "https://hugohu.site"
 const HOMEPAGE_LOCALES: timer.Locale[] = ["zh_CN", "zh_TW", "en"]
 
 export function getHomepageWithLocale(): string {

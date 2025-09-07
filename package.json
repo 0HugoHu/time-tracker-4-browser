@@ -2,7 +2,7 @@
     "name": "timer",
     "version": "3.6.2",
     "description": "Time tracker for browser",
-    "homepage": "https://www.wfhg.cc",
+    "homepage": "https://hugohu.site",
     "scripts": {
         "pure-install": "npm install --include=optional --ignore-scripts",
         "dev": "rspack --config=rspack/rspack.dev.ts --watch",
@@ -20,12 +20,12 @@
         "prepare": "husky"
     },
     "author": {
-        "name": "zhy",
-        "email": "returnzhy1996@outlook.com",
-        "url": "https://www.github.com/sheepzh"
+        "name": "Hugo",
+        "email": "hugo@hugohu.site",
+        "url": "https://github.com/0HugoHu"
     },
     "repository": {
-        "url": "https://github.com/sheepzh/timer"
+        "url": "https://github.com/0HugoHu/time-tracker-4-browser"
     },
     "license": "MIT",
     "devDependencies": {

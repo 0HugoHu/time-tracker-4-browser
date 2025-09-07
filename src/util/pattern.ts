@@ -77,12 +77,12 @@ export function isValidHost(host: string) {
  *
  * github.com/              = false
  * github.com               = false
- * github.com/sheepzh       = true
+ * github.com/0HugoHu       = true
  * github.com/*             = true
  * github.com/**            = true
- * github.com/sheepzh/      = false
- * github.com/sheepzh?      = false
- * github.com/sheepzh?a=1   = false
+ * github.com/0HugoHu/      = false
+ * github.com/0HugoHu?      = false
+ * github.com/0HugoHu?a=1   = false
  * http://github.com/123    = false
  *
  * @since 1.6.0
@@ -95,8 +95,8 @@ export function isValidVirtualHost(host: string) {
     const segments = host.split('/')
     // Can't be normal host
     if (segments.length === 1) return false
-    if (!isValidHost(segments[0])) return false
-    return true
+    return isValidHost(segments[0]);
+
 }
 
 /**

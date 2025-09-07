@@ -49,8 +49,8 @@ export const VIRTUAL_MSG = t(msg => msg.siteManage.type.virtual?.name)?.toLocale
  *      1. www.google.com
  *      2. www.google.com[MERGED]
  *      4. www.google.com[EXISTED]
- *      5. www.github.com/sheepzh/*[VIRTUAL]
- *      5. www.github.com/sheepzh/*[VIRTUAL-EXISTED]
+ *      5. www.github.com/0HugoHu/*[VIRTUAL]
+ *      5. www.github.com/0HugoHu/*[VIRTUAL-EXISTED]
  *      3. www.google.com[MERGED-EXISTED]
  */
 export function labelOf(siteKey: timer.site.SiteKey, exists?: boolean): string {
