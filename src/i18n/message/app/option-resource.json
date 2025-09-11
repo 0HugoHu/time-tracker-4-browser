@@ -92,7 +92,11 @@
                 "obsidian_local_rest_api": {
                     "endpointInfo": "因为无法为浏览器插件配置跨域，所以只能使用 HTTP 协议"
                 },
-                "web_dav": {}
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS 实时同步",
+                    "authInfo": "需要AWS凭证和端点进行实时同步"
+                }
             },
             "label": {
                 "endpoint": "服务地址 {info} {input}",
@@ -230,6 +234,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "僅支援 HTTP，因無法為擴充功能頁面設定 CORS"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS 即時同步",
+                    "authInfo": "需要AWS認證和端點進行即時同步"
                 }
             },
             "label": {
@@ -369,7 +378,11 @@
                 "obsidian_local_rest_api": {
                     "endpointInfo": "Only HTTP is available, as CORS cannot be configured for extension pages"
                 },
-                "web_dav": {}
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS Real-time Sync",
+                    "authInfo": "AWS credentials and endpoints required for real-time synchronization"
+                }
             },
             "label": {
                 "endpoint": "Endpoint address {info} {input}",
@@ -504,6 +517,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "拡張機能のページに CORS を設定できないため、HTTP のみが利用できます。"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS リアルタイム同期",
+                    "authInfo": "リアルタイム同期にはAWSクレデンシャルとエンドポイントが必要"
                 }
             },
             "label": {
@@ -639,6 +657,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "Apenas HTTP disponível (limitação CORS)"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "Sincronização AWS em tempo real",
+                    "authInfo": "Credenciais AWS e endpoints necessários para sincronização"
                 }
             },
             "label": {
@@ -767,6 +790,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "Підтримується лише HTTP-доступ, оскільки для сторінок розширень неможливо налаштувати CORS"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS синхронізація в реальному часі",
+                    "authInfo": "Необхідні AWS облікові дані та кінцеві точки для синхронізації"
                 }
             },
             "label": {
@@ -898,6 +926,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "Solo HTTP está disponible porque no es posible configurar CORS para las páginas de extensiones"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "Sincronización AWS en tiempo real",
+                    "authInfo": "Se requieren credenciales AWS y endpoints para sincronización en tiempo real"
                 }
             },
             "label": {
@@ -1029,6 +1062,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "Es ist nur HTTP verfügbar, da CORS nicht für Erweiterungsseiten konfiguriert werden kann"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS Echtzeit-Synchronisation",
+                    "authInfo": "AWS-Anmeldedaten und Endpunkte für Echtzeit-Synchronisation erforderlich"
                 }
             },
             "label": {
@@ -1160,6 +1198,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "Seul HTTP est disponible car il n'est pas possible de configurer CORS pour les pages d'extensions"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "Synchronisation AWS en temps réel",
+                    "authInfo": "Identifiants AWS et points d'extrémité requis pour la synchronisation en temps réel"
                 }
             },
             "label": {
@@ -1244,6 +1287,24 @@
         },
         "backup": {
             "title": "Резервное копирование данных",
+            "type": "Тип резервного копирования {input}",
+            "client": "Имя клиента {input}",
+            "meta": {
+                "none": {
+                    "label": "Всегда отключено"
+                },
+                "gist": {
+                    "authInfo": "Требуется токен с разрешениями gist"
+                },
+                "obsidian_local_rest_api": {
+                    "endpointInfo": "Доступен только HTTP, так как нельзя настроить CORS для страниц расширений"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "AWS синхронизация в реальном времени",
+                    "authInfo": "Требуются учетные данные AWS и конечные точки для синхронизации"
+                }
+            },
             "operation": "Резервное копирование",
             "download": {
                 "btn": "Скачать"
@@ -1345,6 +1406,11 @@
                 },
                 "obsidian_local_rest_api": {
                     "endpointInfo": "متوفر HTTP فقط، حيث لا يمكن تكوين مشاركة الموارد عبر المنشأ (CORS) لصفحات الاضافة"
+                },
+                "web_dav": {},
+                "aws": {
+                    "label": "مزامنة AWS في الوقت الفعلي",
+                    "authInfo": "مطلوب بيانات اعتماد AWS ونقاط النهاية للمزامنة في الوقت الفعلي"
                 }
             },
             "label": {

@@ -72,6 +72,9 @@ declare namespace timer.backup {
         | 'obsidian_local_rest_api'
         // @since 2.4.5
         | 'web_dav'
+        // AWS real-time sync
+        // @since 3.7.0
+        | 'aws'
 
     type AuthType =
         | 'token'
@@ -86,6 +89,14 @@ declare namespace timer.backup {
         bucket?: string
         endpoint?: string
         dirPath?: string
+        /**
+         * AWS configuration
+         * @since 3.7.0
+         */
+        region?: string
+        apiEndpoint?: string
+        websocketEndpoint?: string
+        apiKey?: string
     }
 
     /**

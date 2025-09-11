@@ -13,6 +13,7 @@ import { formatTimeYMD, getBirthday } from "@util/time"
 import GistCoordinator from "./gist/coordinator"
 import ObsidianCoordinator from "./obsidian/coordinator"
 import WebDAVCoordinator from "./web-dav/coordinator"
+import AwsCoordinator from "./aws/coordinator"
 
 export type AuthCheckResult = {
     option: timer.option.BackupOption
@@ -153,6 +154,7 @@ class Processor {
             gist: new GistCoordinator(),
             obsidian_local_rest_api: new ObsidianCoordinator(),
             web_dav: new WebDAVCoordinator(),
+            aws: new AwsCoordinator(),
         }
     }
 

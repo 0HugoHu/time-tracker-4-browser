@@ -23,6 +23,8 @@ import VersionMigrator from "./migrator"
 import initSidePanel from "./side-panel"
 import initTrackServer from "./track-server"
 import initWhitelistMenuManager from "./whitelist-menu-manager"
+// Initialize sync integration for AWS real-time sync
+import "@service/sync/sync-integration"
 
 // Open the log of console
 openLog()

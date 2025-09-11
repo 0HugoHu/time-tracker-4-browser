@@ -46,6 +46,20 @@ export async function fetchPutText(url: string, bodyText?: string, option?: Opti
     }
 }
 
+export async function fetchPut<T>(url: string, body?: T, option?: Option): Promise<Response> {
+    try {
+        const response = await fetch(url, {
+            ...(option || {}),
+            method: "PUT",
+            body: body ? JSON.stringify(body) : null,
+        })
+        return response
+    } catch (e) {
+        console.error("Failed to fetch put", e)
+        throw Error(e?.toString?.() ?? 'Unknown error')
+    }
+}
+
 export async function fetchDelete(url: string, option?: Option): Promise<Response> {
     try {
         const response = await fetch(url, {

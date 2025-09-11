@@ -37,4 +37,15 @@ declare namespace timer.core {
     }
 
     type Row = RowKey & Result
+
+    /**
+     * Enhanced row for real-time sync with conflict resolution
+     * @since 3.7.0
+     */
+    type EnhancedRow = Row & {
+        sessionId?: string
+        lastModified?: number
+        version?: number
+        batchId?: string
+    }
 }

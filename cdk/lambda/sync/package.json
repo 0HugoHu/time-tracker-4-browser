@@ -1,0 +1,7 @@
+{
+  "name": "sync-lambda",
+  "version": "1.0.0",
+  "description": "Sync Lambda function for Web Time Tracker",
+  "main": "sync.js",
+  "dependencies": {}
+}

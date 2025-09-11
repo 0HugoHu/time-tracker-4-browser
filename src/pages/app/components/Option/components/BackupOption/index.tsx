@@ -24,13 +24,15 @@ const ALL_TYPES: timer.backup.Type[] = [
     'gist',
     'web_dav',
     'obsidian_local_rest_api',
+    'aws',
 ]
 
 const TYPE_NAMES: { [t in timer.backup.Type]: string } = {
     none: t(msg => msg.option.backup.meta.none.label),
     gist: 'GitHub Gist',
     obsidian_local_rest_api: 'Obsidian - Local REST API',
-    web_dav: 'WebDAV'
+    web_dav: 'WebDAV',
+    aws: 'AWS Real-time Sync'
 }
 
 const _default = defineComponent((_, ctx) => {
@@ -168,6 +170,69 @@ const _default = defineComponent((_, ctx) => {
                     showPassword
                     style={{ width: "300px" }}
                     onInput={val => password.value = val?.trim?.()}
+                />
+            </OptionItem>
+        </>}
+        {backupType.value === 'aws' && <>
+            <OptionItem
+                key="aws-api-key"
+                label={_ => 'API Key {info} {input}'}
+                v-slots={{
+                    info: () => <OptionTooltip>{'AWS API Gateway key for authentication'}</OptionTooltip>
+                }}
+                required
+            >
+                <ElInput
+                    modelValue={auth.value}
+                    size="small"
+                    type="password"
+                    showPassword
+                    style={{ width: "400px" }}
+                    onInput={val => auth.value = val?.trim?.() || ''}
+                    placeholder="Enter your AWS API key"
+                />
+            </OptionItem>
+            <OptionItem
+                key="aws-api-endpoint"
+                label={_ => 'API Endpoint {info} {input}'}
+                v-slots={{
+                    info: () => <OptionTooltip>{'AWS API Gateway endpoint URL from CDK deployment'}</OptionTooltip>
+                }}
+                required
+            >
+                <ElInput
+                    modelValue={ext.value?.apiEndpoint}
+                    size="small"
+                    style={{ width: "400px" }}
+                    onInput={val => setExtField('apiEndpoint', val)}
+                    placeholder="https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/prod"
+                />
+            </OptionItem>
+            <OptionItem
+                key="aws-websocket-endpoint"
+                label={_ => 'WebSocket Endpoint {info} {input}'}
+                v-slots={{
+                    info: () => <OptionTooltip>{'AWS WebSocket API endpoint for real-time updates'}</OptionTooltip>
+                }}
+            >
+                <ElInput
+                    modelValue={ext.value?.websocketEndpoint}
+                    size="small"
+                    style={{ width: "400px" }}
+                    onInput={val => setExtField('websocketEndpoint', val)}
+                    placeholder="wss://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/prod"
+                />
+            </OptionItem>
+            <OptionItem
+                key="aws-region"
+                label={_ => 'AWS Region {input}'}
+            >
+                <ElInput
+                    modelValue={ext.value?.region || 'us-east-1'}
+                    size="small"
+                    style={{ width: "200px" }}
+                    onInput={val => setExtField('region', val)}
+                    placeholder="us-east-1"
                 />
             </OptionItem>
         </>}

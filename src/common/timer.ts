@@ -46,4 +46,6 @@ declare global {
  *
  * @since 0.0.8
  */
-window.timer = timer
+if (typeof window !== 'undefined') {
+    window.timer = timer
+}
