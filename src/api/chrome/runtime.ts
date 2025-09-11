@@ -16,14 +16,38 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
     const request: timer.mq.Request<T> = { code, data }
     return new Promise((resolve, reject) => {
         try {
+            // Check if extension context is still valid
+            if (!chrome.runtime?.id) {
+                console.warn('Extension context invalidated, ignoring message:', code)
+                resolve(undefined)
+                return
+            }
+            
             chrome.runtime.sendMessage(request, (response: timer.mq.Response<R>) => {
-                handleError('sendMsg2Runtime')
+                const lastError = handleError('sendMsg2Runtime')
+                
+                // Check if context was invalidated during the call
+                if (lastError?.includes('Extension context invalidated') || lastError?.includes('message port closed')) {
+                    console.warn('Extension context invalidated during message send:', code)
+                    resolve(undefined)
+                    return
+                }
+                
                 const resCode = response?.code
                 resCode === 'fail' && reject(new Error(response?.msg || 'Unknown error'))
                 resCode === 'success' && resolve(response.data)
             })
         } catch (e) {
-            reject('Failed to send message: ' + (e as Error)?.message || 'Unknown error')
+            const errorMsg = (e as Error)?.message || 'Unknown error'
+            
+            // Handle context invalidation gracefully
+            if (errorMsg.includes('Extension context invalidated') || errorMsg.includes('message port closed')) {
+                console.warn('Extension context invalidated, ignoring message:', code)
+                resolve(undefined)
+                return
+            }
+            
+            reject('Failed to send message: ' + errorMsg)
         }
     })
 }

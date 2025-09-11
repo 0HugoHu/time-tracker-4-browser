@@ -86,9 +86,8 @@ const changeLogProps: ChromeContextMenuCreateProps = {
 }
 
 function initBrowserAction() {
-    // Create sidebar item for Firefox
+    // Create sidebar item for Firefox or all functions for other browsers
     createContextMenu(IS_FIREFOX ? sidebarProps : allFunctionProps)
-    createContextMenu(allFunctionProps)
     createContextMenu(optionPageProps)
     createContextMenu(repoPageProps)
     createContextMenu(feedbackPageProps)

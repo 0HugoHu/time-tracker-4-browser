@@ -391,15 +391,19 @@ async function handleDownload(event) {
   const endDate = queryStringParameters?.endDate;
   const targetClientId = queryStringParameters?.clientId;
 
-  if (!clientId) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Client ID required' })
-    };
-  }
-
   try {
-    const data = await downloadData(targetClientId || clientId, startDate, endDate);
+    let data;
+    
+    if (targetClientId) {
+      // Download specific client's data
+      data = await downloadData(targetClientId, startDate, endDate);
+    } else if (clientId) {
+      // Download requesting client's data
+      data = await downloadData(clientId, startDate, endDate);
+    } else {
+      // Download ALL data (for private use)
+      data = await downloadAllData(startDate, endDate);
+    }
 
     return {
       statusCode: 200,
@@ -419,7 +423,7 @@ async function handleDownload(event) {
 }
 
 /**
- * Download data for date range
+ * Download data for date range (specific client)
  */
 async function downloadData(clientId, startDate, endDate) {
   const result = [];
@@ -438,6 +442,32 @@ async function downloadData(clientId, startDate, endDate) {
 
   // Deduplicate and sort
   const uniqueData = deduplicateRows(result);
+  return uniqueData.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * Download ALL data from ALL clients (for private use)
+ */
+async function downloadAllData(startDate, endDate) {
+  const result = [];
+  const start = startDate ? new Date(startDate) : new Date('2020-01-01');
+  const end = endDate ? new Date(endDate) : new Date();
+
+  console.log(`Downloading ALL data from ${start.toISOString()} to ${end.toISOString()}`);
+
+  // Download from hot data (DynamoDB) - scan all records
+  const hotData = await downloadAllHotData(start, end);
+  result.push(...hotData);
+
+  // Download from cold data (S3) if needed - scan all S3 objects
+  if (start < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) {
+    const coldData = await downloadAllColdData(start, end);
+    result.push(...coldData);
+  }
+
+  // Deduplicate and sort
+  const uniqueData = deduplicateRows(result);
+  console.log(`Downloaded ${uniqueData.length} total records from all clients`);
   return uniqueData.sort((a, b) => a.date.localeCompare(b.date));
 }
 
@@ -482,7 +512,7 @@ async function downloadHotData(clientId, startDate, endDate) {
 }
 
 /**
- * Download cold data from S3
+ * Download cold data from S3 (specific client)
  */
 async function downloadColdData(clientId, startDate, endDate) {
   const result = [];
@@ -517,7 +547,8 @@ async function downloadColdData(clientId, startDate, endDate) {
             host: record.host,
             date: record.date,
             focus: record.focus,
-            time: record.time
+            time: record.time,
+            clientId: clientId
           });
         }
       });
@@ -527,6 +558,99 @@ async function downloadColdData(clientId, startDate, endDate) {
       }
     }
   }
+
+  return result;
+}
+
+/**
+ * Download ALL hot data from DynamoDB (all clients)
+ */
+async function downloadAllHotData(startDate, endDate) {
+  const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
+  const result = [];
+  const startDateStr = formatDate(startDate);
+  const endDateStr = formatDate(endDate);
+
+  let lastEvaluatedKey;
+  do {
+    const response = await dynamoClient.send(new ScanCommand({
+      TableName: HOT_DATA_TABLE,
+      FilterExpression: 'SK = :sk AND #date BETWEEN :startDate AND :endDate AND lastModified BETWEEN :startTime AND :endTime',
+      ExpressionAttributeNames: {
+        '#date': 'date'
+      },
+      ExpressionAttributeValues: {
+        ':sk': 'data',
+        ':startDate': startDateStr,
+        ':endDate': endDateStr,
+        ':startTime': startDate.getTime(),
+        ':endTime': endDate.getTime()
+      },
+      ExclusiveStartKey: lastEvaluatedKey
+    }));
+
+    result.push(...response.Items);
+    lastEvaluatedKey = response.LastEvaluatedKey;
+  } while (lastEvaluatedKey);
+
+  return result.map(item => ({
+    host: item.host,
+    date: item.date,
+    focus: item.focus,
+    time: item.time,
+    clientId: item.clientId
+  }));
+}
+
+/**
+ * Download ALL cold data from S3 (all clients)
+ */
+async function downloadAllColdData(startDate, endDate) {
+  const { S3Client, ListObjectsV2Command } = require('@aws-sdk/client-s3');
+  const result = [];
+
+  // List all S3 objects
+  let continuationToken;
+  do {
+    const listResponse = await s3Client.send(new ListObjectsV2Command({
+      Bucket: DATA_BUCKET,
+      ContinuationToken: continuationToken
+    }));
+
+    const promises = listResponse.Contents?.map(async (object) => {
+      try {
+        const response = await s3Client.send(new GetObjectCommand({
+          Bucket: DATA_BUCKET,
+          Key: object.Key
+        }));
+
+        const compressed = await streamToString(response.Body);
+        const monthlyData = decompress(compressed);
+
+        // Extract clientId from S3 key or metadata
+        const clientId = object.Key.split('/')[0]; // Assuming format: clientId/YYYYMM.gz
+
+        // Filter by date range
+        Object.values(monthlyData).forEach(record => {
+          const recordDate = new Date(record.date.slice(0, 4) + '-' + record.date.slice(4, 6) + '-' + record.date.slice(6, 8));
+          if (recordDate >= startDate && recordDate <= endDate) {
+            result.push({
+              host: record.host,
+              date: record.date,
+              focus: record.focus,
+              time: record.time,
+              clientId: clientId
+            });
+          }
+        });
+      } catch (error) {
+        console.warn(`Error downloading ${object.Key}:`, error);
+      }
+    }) || [];
+
+    await Promise.all(promises);
+    continuationToken = listResponse.NextContinuationToken;
+  } while (continuationToken);
 
   return result;
 }
@@ -566,16 +690,16 @@ async function sendUpdateNotification(clientIds, updateData) {
 }
 
 /**
- * Deduplicate rows by host+date, keeping latest
+ * Deduplicate rows by host+date+clientId, keeping latest
  */
 function deduplicateRows(rows) {
   const map = new Map();
 
   rows.forEach(row => {
-    const key = `${row.host}#${row.date}`;
+    const key = `${row.clientId || 'unknown'}#${row.host}#${row.date}`;
     const existing = map.get(key);
 
-    if (!existing || row.lastModified > existing.lastModified) {
+    if (!existing || (row.lastModified && row.lastModified > existing.lastModified)) {
       map.set(key, row);
     }
   });

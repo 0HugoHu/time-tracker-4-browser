@@ -1,4 +1,4 @@
-const { DynamoDBDocumentClient, ScanCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { ApiGatewayManagementApiClient, PostToConnectionCommand } = require('@aws-sdk/client-apigatewaymanagementapi');
 
@@ -96,12 +96,15 @@ async function sendNotification(connection, notification) {
   const { connectionId } = connection;
 
   // Extract API Gateway endpoint from environment or connection info
-  // In practice, you'd store this when the connection is established
-  const endpoint = process.env.WEBSOCKET_ENDPOINT ||
-                  `${connectionId.split('/')[0]}.execute-api.${process.env.AWS_REGION}.amazonaws.com/prod`;
+  // The WebSocket endpoint should be provided by the CDK stack
+  const endpoint = process.env.WEBSOCKET_ENDPOINT;
+  
+  if (!endpoint) {
+    throw new Error('WEBSOCKET_ENDPOINT environment variable not set');
+  }
 
   const apiGatewayClient = new ApiGatewayManagementApiClient({
-    endpoint: `https://${endpoint}`
+    endpoint: endpoint.replace('wss://', 'https://').replace('ws://', 'http://')
   });
 
   try {

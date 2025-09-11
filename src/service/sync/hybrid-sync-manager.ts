@@ -114,7 +114,12 @@ export class HybridSyncManager {
         this.emit('sync-status', { connected: false, method: 'websocket', status: 'connecting' })
         
         // Build WebSocket URL with client ID
-        const url = new URL(websocketEndpoint)
+        // Handle different URL formats
+        const wsUrl = websocketEndpoint.startsWith('wss://') 
+            ? websocketEndpoint 
+            : `wss://${websocketEndpoint}`
+        
+        const url = new URL(wsUrl)
         url.searchParams.set('clientId', this.clientId)
         
         this.websocket = new WebSocket(url.toString())

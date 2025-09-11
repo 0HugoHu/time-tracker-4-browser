@@ -197,6 +197,7 @@ export class WebTimeTrackerStack extends cdk.Stack {
       layers: [sharedLayer],
       environment: {
         CONNECTIONS_TABLE: connectionsTable.tableName,
+        // WebSocket endpoint will be added after WebSocket API creation
       },
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
@@ -285,6 +286,9 @@ export class WebTimeTrackerStack extends cdk.Stack {
         `arn:aws:execute-api:${this.region}:${this.account}:${websocketApi.apiId}/${websocketStage.stageName}/*`
       ],
     }));
+
+    // Add WebSocket endpoint to notify lambda environment
+    notifyLambda.addEnvironment('WEBSOCKET_ENDPOINT', websocketStage.url);
 
     // EventBridge rules
     const dataChangeRule = new events.Rule(this, 'DataChangeRule', {

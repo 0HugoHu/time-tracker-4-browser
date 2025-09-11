@@ -35,6 +35,8 @@ class SyncIntegration {
             
             // Hook into database operations
             this.wrapDatabaseMethods()
+            
+            console.log('SyncIntegration: AWS real-time sync initialized successfully')
         }
         
         this.isInitialized = true
@@ -185,5 +187,31 @@ class SyncIntegration {
 // Global singleton instance
 export const syncIntegration = new SyncIntegration()
 
-// Auto-initialize when imported
-syncIntegration.init().catch(console.error)
+// Initialize when extension is ready
+let isInitializing = false
+const initWhenReady = async () => {
+    if (isInitializing) return
+    
+    try {
+        isInitializing = true
+        
+        // Wait for extension context to be stable
+        if (!chrome?.runtime?.id) {
+            isInitializing = false
+            setTimeout(initWhenReady, 1000)
+            return
+        }
+        
+        await syncIntegration.init()
+        console.log('SyncIntegration initialized successfully')
+        isInitializing = false
+    } catch (error) {
+        console.error('Failed to initialize SyncIntegration:', error)
+        isInitializing = false
+        // Retry after delay if initialization fails
+        setTimeout(initWhenReady, 3000)
+    }
+}
+
+// Start initialization
+initWhenReady()

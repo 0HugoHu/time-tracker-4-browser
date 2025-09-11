@@ -87,7 +87,8 @@ function getHeaders(config: AwsConfig, clientId?: string): Record<string, string
  * Upload data rows to AWS backend
  */
 export async function uploadData(config: AwsConfig, clientId: string, rows: timer.core.EnhancedRow[], batchId: string): Promise<SyncResponse> {
-    const url = `${config.apiEndpoint}/sync`
+    const baseUrl = config.apiEndpoint.endsWith('/') ? config.apiEndpoint.slice(0, -1) : config.apiEndpoint
+    const url = `${baseUrl}/sync`
     const headers = getHeaders(config, clientId)
     
     const body: SyncRequest = {
@@ -115,7 +116,8 @@ export async function downloadData(config: AwsConfig, clientId: string, request:
     if (request.endDate) params.set('endDate', request.endDate)
     if (request.clientId) params.set('clientId', request.clientId)
     
-    const url = `${config.apiEndpoint}/data?${params.toString()}`
+    const baseUrl = config.apiEndpoint.endsWith('/') ? config.apiEndpoint.slice(0, -1) : config.apiEndpoint
+    const url = `${baseUrl}/data?${params.toString()}`
     const headers = getHeaders(config, clientId)
     
     const response = await fetchGet(url, { headers })
@@ -132,7 +134,8 @@ export async function downloadData(config: AwsConfig, clientId: string, request:
  * List all clients
  */
 export async function listClients(config: AwsConfig, clientId: string): Promise<ClientsResponse> {
-    const url = `${config.apiEndpoint}/sync`
+    const baseUrl = config.apiEndpoint.endsWith('/') ? config.apiEndpoint.slice(0, -1) : config.apiEndpoint
+    const url = `${baseUrl}/sync`
     const headers = getHeaders(config, clientId)
     
     const response = await fetchGet(url, { headers })
@@ -150,7 +153,8 @@ export async function listClients(config: AwsConfig, clientId: string): Promise<
  */
 export async function testConnection(config: AwsConfig, clientId: string): Promise<string | undefined> {
     try {
-        const url = `${config.apiEndpoint}/sync`
+        const baseUrl = config.apiEndpoint.endsWith('/') ? config.apiEndpoint.slice(0, -1) : config.apiEndpoint
+        const url = `${baseUrl}/sync`
         const headers = getHeaders(config, clientId)
         
         const response = await fetchGet(url, { headers })
@@ -170,7 +174,8 @@ export async function testConnection(config: AwsConfig, clientId: string): Promi
  * Update specific data records
  */
 export async function updateData(config: AwsConfig, clientId: string, rows: timer.core.EnhancedRow[]): Promise<SyncResponse> {
-    const url = `${config.apiEndpoint}/data`
+    const baseUrl = config.apiEndpoint.endsWith('/') ? config.apiEndpoint.slice(0, -1) : config.apiEndpoint
+    const url = `${baseUrl}/data`
     const headers = getHeaders(config, clientId)
     
     const body = {
