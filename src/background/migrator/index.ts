@@ -7,6 +7,7 @@
 
 import { getVersion, onInstalled } from "@api/chrome/runtime"
 import CateInitializer from "./cate-initializer"
+import LimitCleanupMigrator from "./limit-cleanup-migrator"
 import { type Migrator } from "./common"
 import HostMergeInitializer from "./host-merge-initializer"
 import LocalFileInitializer from "./local-file-initializer"
@@ -26,6 +27,7 @@ class VersionManager {
             new LocalFileInitializer(),
             new WhitelistInitializer(),
             new CateInitializer(),
+            new LimitCleanupMigrator(),
         )
     }
 

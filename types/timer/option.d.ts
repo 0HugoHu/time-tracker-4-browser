@@ -135,36 +135,6 @@ declare namespace timer.option {
         weekStart?: WeekStartOption
     }
 
-    type LimitOption = {
-        /**
-         * Motto displayed when restricted
-         */
-        limitPrompt?: string
-        /**
-         * restriction level
-         */
-        limitLevel: limit.RestrictionLevel
-        /**
-         * The password to unlock
-         */
-        limitPassword?: string
-        /**
-         * The difficulty of verification
-         */
-        limitVerifyDifficulty?: limit.VerificationDifficulty
-        /**
-         *  Whether to reminder before time will meet
-         *
-         * @since 3.1.0
-         */
-        limitReminder: boolean
-        /**
-         * Minutes
-         *
-         * @since 3.1.0
-         */
-        limitReminderDuration?: number
-    }
 
     /**
      * The options of backup
@@ -214,7 +184,6 @@ declare namespace timer.option {
     type AllOption = PopupOption
         & AppearanceOption
         & StatisticsOption
-        & LimitOption
         & AccessibilityOption
         & BackupOption
     /**

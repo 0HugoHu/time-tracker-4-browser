@@ -122,12 +122,15 @@ const _default = defineComponent((_, ctx) => {
                 />
             </OptionItem>
         </>}
-        <OptionItem v-show={isNotNone.value} label={msg => msg.option.backup.client}>
+        <OptionItem v-show={isNotNone.value} label={_ => "Client Name {info} {input}"} v-slots={{
+            info: () => <OptionTooltip>{'Unique name to identify this device/browser in sync operations. Auto-generated based on system info.'}</OptionTooltip>
+        }}>
             <ElInput
                 modelValue={clientName.value}
                 size="small"
-                style={{ width: "120px" }}
+                style={{ width: "200px" }}
                 onInput={val => clientName.value = val?.trim?.() || ''}
+                placeholder="Auto-generated device name"
             />
         </OptionItem>
         {isNotNone.value && <Footer type={backupType.value} />}

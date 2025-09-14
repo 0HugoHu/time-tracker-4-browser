@@ -87,12 +87,6 @@ export type OptionMessage = {
             notSelected: string
             current: string
         }
-        download: {
-            btn: string
-            step2: string
-            willDownload: string
-            confirmTip: string
-        }
         clear: {
             btn: string
             confirmTip: string

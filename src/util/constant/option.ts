@@ -50,27 +50,18 @@ export function defaultStatistics(): StatisticsRequired {
     }
 }
 
-type DailyLimitRequired = MakeRequired<timer.option.LimitOption, 'limitPassword' | 'limitVerifyDifficulty' | 'limitReminderDuration'>
 
-export function defaultDailyLimit(): DailyLimitRequired {
-    return {
-        limitLevel: 'nothing',
-        limitPassword: '',
-        limitVerifyDifficulty: 'easy',
-        limitReminder: false,
-        limitReminderDuration: 5,
-    }
-}
+import { generateSmartClientName } from "@util/system-info"
 
 export function defaultBackup(): timer.option.BackupOption {
     return {
         backupType: 'none',
-        clientName: 'unknown',
+        clientName: generateSmartClientName(),
         backupAuths: {},
         backupLogin: {},
         backupExts: {},
         autoBackUp: false,
-        autoBackUpInterval: 30,
+        autoBackUpInterval: 10, // Reduced from 30 to 10 minutes for more frequent syncing
     }
 }
 
@@ -81,7 +72,7 @@ export function defaultAccessibility(): timer.option.AccessibilityOption {
 }
 
 export type DefaultOption =
-    & timer.option.PopupOption & AppearanceRequired & StatisticsRequired & DailyLimitRequired
+    & timer.option.PopupOption & AppearanceRequired & StatisticsRequired
     & timer.option.BackupOption & timer.option.AccessibilityOption
 
 export function defaultOption(): DefaultOption {
@@ -90,7 +81,6 @@ export function defaultOption(): DefaultOption {
         ...defaultAppearance(),
         ...defaultStatistics(),
         ...defaultBackup(),
-        ...defaultDailyLimit(),
         ...defaultAccessibility(),
     }
 }

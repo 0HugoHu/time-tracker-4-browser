@@ -50,17 +50,6 @@ export type ConflictInfo = {
     }
 }
 
-export type DownloadRequest = {
-    startDate?: string
-    endDate?: string
-    clientId?: string
-}
-
-export type DownloadResponse = {
-    success: boolean
-    data: timer.core.Row[]
-    count: number
-}
 
 export type ClientsResponse = {
     clients: timer.backup.Client[]
@@ -150,38 +139,6 @@ export async function uploadData(config: AwsConfig, clientId: string, rows: time
     })
 }
 
-/**
- * Download data from AWS backend
- */
-export async function downloadData(config: AwsConfig, clientId: string, request: DownloadRequest): Promise<DownloadResponse> {
-    if (!config.apiEndpoint || !config.apiKey) {
-        throw new Error('AWS configuration incomplete: missing apiEndpoint or apiKey')
-    }
-    
-    if (!clientId) {
-        throw new Error('Invalid download parameters: missing clientId')
-    }
-    
-    const params = new URLSearchParams()
-    if (request.startDate) params.set('startDate', request.startDate)
-    if (request.endDate) params.set('endDate', request.endDate)
-    if (request.clientId) params.set('clientId', request.clientId)
-    
-    const baseUrl = config.apiEndpoint.endsWith('/') ? config.apiEndpoint.slice(0, -1) : config.apiEndpoint
-    const url = `${baseUrl}/data?${params.toString()}`
-    const headers = getHeaders(config, clientId)
-    
-    return await withRetry(async () => {
-        const response = await fetchGet(url, { headers })
-        
-        if (!response.ok) {
-            const errorText = await response.text()
-            throw new Error(`Download failed: HTTP ${response.status} - ${errorText}`)
-        }
-        
-        return await response.json()
-    })
-}
 
 /**
  * List all clients

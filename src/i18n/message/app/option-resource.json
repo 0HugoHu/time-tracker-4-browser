@@ -106,12 +106,6 @@
             },
             "lastTimeTip": "上次备份时间: {lastTime}",
             "operation": "备份数据",
-            "download": {
-                "btn": "下载数据",
-                "step2": "确认数据",
-                "willDownload": "待下载数据",
-                "confirmTip": "将下载来自【{clientName}】的 {size} 条数据"
-            },
             "clear": {
                 "btn": "清除数据",
                 "confirmTip": "将删除【{clientName}】所追踪的 {hostCount} 个站点的 {rowCount} 条数据！"

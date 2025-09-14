@@ -50,7 +50,7 @@ const _default = defineComponent<Props>((props, ctx) => {
                 steps: () => (
                     <ElSteps space={200} finishStatus="success" active={step.value} alignCenter>
                         <ElStep title={t(msg => msg.option.backup.clientTable.selectTip)} />
-                        <ElStep title={t(msg => msg.option.backup.download.step2)} />
+                        <ElStep title="Confirm Data" />
                     </ElSteps>
                 ),
                 content: () => step.value === 0 ? <Step1 ref={step1} /> : <Step2 data={data.value} />

@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { downloadData, listClients, testConnection, uploadData, type AwsConfig, type ConflictInfo } from "@api/aws"
+import { listClients, testConnection, uploadData, type AwsConfig, type ConflictInfo } from "@api/aws"
 import { formatTimeYMD } from "@util/time"
 
 /**
@@ -111,20 +111,10 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
         dateEnd: Date,
         targetCid?: string
     ): Promise<timer.core.Row[]> {
-        const config = this.getConfig(context)
-        
-        try {
-            const response = await downloadData(config, context.cid, {
-                startDate: formatTimeYMD(dateStart),
-                endDate: formatTimeYMD(dateEnd),
-                clientId: targetCid
-            })
-            
-            return response.data || []
-        } catch (error) {
-            console.error('AWS: Failed to download data:', error)
-            throw new Error(`Failed to download data: ${error instanceof Error ? error.message : error}`)
-        }
+        // Download functionality has been removed for security and simplicity
+        // AWS backup now focuses purely on upload/sync operations
+        console.log('AWS: Download functionality has been disabled')
+        return []
     }
 
     async upload(
