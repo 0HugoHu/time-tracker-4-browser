@@ -7,6 +7,7 @@
 
 import { sendMsg2Runtime } from "@api/chrome/runtime"
 import { initLocale } from "@i18n"
+import { contentLogger } from "@util/logger"
 import printInfo from "./printer"
 import processTimeline from './timeline'
 import NormalTracker from "./tracker/normal"

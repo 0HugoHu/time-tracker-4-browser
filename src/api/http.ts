@@ -1,3 +1,5 @@
+import { getContextLogger } from "@util/logger"
+
 type Option = Omit<RequestInit, "method" | "body">
 
 export type FetchResult<T> = {
@@ -13,7 +15,7 @@ export async function fetchGet(url: string, option?: Option): Promise<Response> 
         })
         return response
     } catch (e) {
-        console.error("Failed to fetch get", e)
+        getContextLogger().debug("Failed to fetch get", e)
         throw Error(e?.toString?.() ?? 'Unknown error')
     }
 }
@@ -27,7 +29,7 @@ export async function fetchPost<T>(url: string, body?: T, option?: Option): Prom
         })
         return response
     } catch (e) {
-        console.error("Failed to fetch post", e)
+        getContextLogger().debug("Failed to fetch post", e)
         throw Error(e?.toString?.() ?? 'Unknown error')
     }
 }
@@ -41,7 +43,7 @@ export async function fetchPutText(url: string, bodyText?: string, option?: Opti
         })
         return response
     } catch (e) {
-        console.error("Failed to fetch putText", e)
+        getContextLogger().debug("Failed to fetch putText", e)
         throw Error(e?.toString?.() ?? 'Unknown error')
     }
 }
@@ -55,7 +57,7 @@ export async function fetchPut<T>(url: string, body?: T, option?: Option): Promi
         })
         return response
     } catch (e) {
-        console.error("Failed to fetch put", e)
+        getContextLogger().debug("Failed to fetch put", e)
         throw Error(e?.toString?.() ?? 'Unknown error')
     }
 }
@@ -68,7 +70,7 @@ export async function fetchDelete(url: string, option?: Option): Promise<Respons
         })
         return response
     } catch (e) {
-        console.error("Failed to fetch delete", e)
+        getContextLogger().debug("Failed to fetch delete", e)
         throw Error(e?.toString?.() ?? 'Unknown error')
     }
 }

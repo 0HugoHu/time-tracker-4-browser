@@ -8,6 +8,7 @@
 import processor from "@service/backup/processor"
 import optionHolder from "@service/components/option-holder"
 import { MILL_PER_MINUTE } from "@util/time"
+import { backgroundLogger } from "@util/logger"
 import alarmManager from "./alarm-manager"
 
 const ALARM_NAME = 'auto-backup-data'
@@ -42,7 +43,7 @@ class BackupScheduler {
     private async doBackup(): Promise<void> {
         const result = await processor.syncData()
         if (!result.success) {
-            console.warn(`Failed to backup ts=${Date.now()}, msg=${result.errorMsg}`)
+            backgroundLogger.debug(`Backup failed: ${result.errorMsg}`)
         }
     }
 }

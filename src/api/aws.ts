@@ -6,6 +6,7 @@
  */
 
 import { fetchGet, fetchPost } from "./http"
+import { getContextLogger } from "@util/logger"
 
 export type AwsConfig = {
     apiEndpoint: string
@@ -84,7 +85,7 @@ async function withRetry<T>(operation: () => Promise<T>, maxRetries = MAX_RETRIE
                 break
             }
             
-            console.warn(`AWS API attempt ${attempt} failed, retrying in ${RETRY_DELAY_MS * attempt}ms...`)
+            getContextLogger().debug(`AWS API attempt ${attempt} failed, retrying in ${RETRY_DELAY_MS * attempt}ms...`)
             await sleep(RETRY_DELAY_MS * attempt)
         }
     }

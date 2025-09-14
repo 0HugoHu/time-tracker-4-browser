@@ -1,4 +1,5 @@
 import { handleError } from "./common"
+import { getContextLogger } from "@util/logger"
 
 export function getRuntimeId(): string {
     return chrome.runtime.id
@@ -22,7 +23,7 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
                 const now = Date.now()
                 const lastWarning = (window as any).__lastContextWarning || 0
                 if (now - lastWarning > 60000) { // 60 seconds
-                    console.warn('Extension context invalidated - tracking paused. Reload extension to resume.')
+                    getContextLogger().debug('Extension context invalidated - tracking paused. Reload extension to resume.')
                     ;(window as any).__lastContextWarning = now
                 }
                 resolve(undefined)
@@ -38,7 +39,7 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
                     const now = Date.now()
                     const lastWarning = (window as any).__lastContextWarning || 0
                     if (now - lastWarning > 60000) {
-                        console.warn('Extension context invalidated - tracking paused. Reload extension to resume.')
+                        getContextLogger().debug('Extension context invalidated - tracking paused. Reload extension to resume.')
                         ;(window as any).__lastContextWarning = now
                     }
                     resolve(undefined)
@@ -58,7 +59,7 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
                 const now = Date.now()
                 const lastWarning = (window as any).__lastContextWarning || 0
                 if (now - lastWarning > 60000) {
-                    console.warn('Extension context invalidated - tracking paused. Reload extension to resume.')
+                    getContextLogger().debug('Extension context invalidated - tracking paused. Reload extension to resume.')
                     ;(window as any).__lastContextWarning = now
                 }
                 resolve(undefined)

@@ -7,6 +7,7 @@
 
 import { sendMsg2Runtime } from "@api/chrome/runtime"
 import { formatPeriodCommon } from "@util/time"
+import { contentLogger } from "@util/logger"
 import { t } from "./locale"
 
 /**
@@ -23,6 +24,6 @@ export default async function printInfo(host: string) {
     }
     const info0 = t(msg => msg.console.consoleLog, param)
     const info1 = t(msg => msg.console.closeAlert, { appName: t(msg => msg.meta.name) })
-    console.log(info0)
-    console.log(info1)
+    contentLogger.info(info0)
+    contentLogger.info(info1)
 }
