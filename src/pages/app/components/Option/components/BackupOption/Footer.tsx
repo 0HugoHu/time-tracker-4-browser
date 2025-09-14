@@ -12,7 +12,6 @@ import Flex from "@pages/components/Flex"
 import processor from "@service/backup/processor"
 import metaService from "@service/meta-service"
 import { formatTime } from "@util/time"
-import { syncIntegration } from "@service/sync/sync-integration"
 import { downloadData } from "@api/aws"
 import optionHolder from "@service/components/option-holder"
 import statDatabase from "@db/stat-database"
@@ -214,14 +213,8 @@ const _default = defineComponent<{ type: timer.backup.Type }>(props => {
     }, { deps: () => props.type, onSuccess: setLastTime })
 
     const { refresh: handleBackup } = useManualRequest(async () => {
-        // For AWS real-time sync, use the new sync integration
-        if (props.type === 'aws' && syncIntegration.isEnabled()) {
-            await syncIntegration.forceSync()
-            return { success: true, data: Date.now() }
-        } else {
-            // For other backup types, use the traditional processor
-            return processor.syncData()
-        }
+        // Use the traditional processor for all backup types (manual sync only)
+        return processor.syncData()
     }, {
         loadingText: "Doing backup....",
         onSuccess: ({ success, data, errorMsg }) => {

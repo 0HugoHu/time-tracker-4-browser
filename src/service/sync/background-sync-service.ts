@@ -10,7 +10,6 @@ import statDatabase from "@db/stat-database"
 import optionHolder from "@service/components/option-holder"
 import metaService from "@service/meta-service"
 import { formatTimeYMD } from "@util/time"
-import { hybridSyncManager } from "./hybrid-sync-manager"
 import AwsCoordinator from "@service/backup/aws/coordinator"
 
 type PendingSync = {
@@ -37,7 +36,7 @@ export class BackgroundSyncService {
     private isProcessing = false
     private readonly maxRetries = 3
     private readonly batchSize = 50 // Max rows per sync batch
-    private readonly syncIntervalMs = 15000 // 15 seconds between batch syncs
+    private readonly syncIntervalMs = 60000 // 1 minute between batch syncs
     private readonly maxQueueSize = 1000 // Max rows in queue before dropping oldest
     private syncInterval: NodeJS.Timeout | null = null
     private stats: SyncStats = {
@@ -62,10 +61,6 @@ export class BackgroundSyncService {
             this.startBackgroundSync()
         }
         
-        // Listen for hybrid sync manager events
-        hybridSyncManager.on('data-updated', (data: any) => {
-            this.handleRemoteUpdate(data)
-        })
     }
     
     private setupEventListeners(): void {
@@ -165,7 +160,11 @@ export class BackgroundSyncService {
      * Queue rows for background sync
      */
     queueForSync(rows: timer.core.Row[]): void {
-        if (!this.isEnabled || !rows || rows.length === 0) {
+        if (!this.isEnabled) {
+            return
+        }
+        
+        if (!rows || rows.length === 0) {
             return
         }
         
@@ -181,11 +180,8 @@ export class BackgroundSyncService {
         
         // Remove old items if queue is too large
         while (this.syncQueue.length > this.maxQueueSize) {
-            const removed = this.syncQueue.shift()
-            console.warn('BackgroundSyncService: Dropping old sync batch:', removed?.batchId)
+            this.syncQueue.shift()
         }
-        
-        console.log(`BackgroundSyncService: Queued ${rows.length} rows for sync (${this.syncQueue.length} batches pending)`)
         
         // Process immediately if online and not already processing
         if (this.stats.isOnline && !this.isProcessing) {
@@ -253,18 +249,44 @@ export class BackgroundSyncService {
         const { option, coordinator, errorMsg } = await processor.checkAuth()
         
         if (errorMsg || !coordinator || option.backupType !== 'aws') {
-            throw new Error(errorMsg || 'AWS sync not configured')
+            const error = errorMsg || 'AWS sync not configured'
+            throw new Error(error)
         }
         
-        const clientId = await metaService.getCid()
+        let clientId = await metaService.getCid()
+        
+        // Generate client ID if none exists (same logic as processor)
         if (!clientId) {
-            throw new Error('No client ID available')
+            const uaData = (navigator as any)?.userAgentData
+            let prefix = 'unknown'
+            if (uaData) {
+                const brand = uaData.brands
+                    ?.map((e: any) => e.brand)
+                    ?.find((b: any) => b.toLowerCase().includes('chrome'))
+                const platform = uaData.platform?.toLowerCase()
+                if (platform && brand) {
+                    prefix = `${platform}-${brand.toLowerCase().replace(/\s/g, '-')}`
+                }
+            }
+            clientId = `${prefix}-${Date.now()}`
+            await metaService.updateCid(clientId)
         }
         
-        // Create context for the coordinator
+        // For AWS sync, use user-specified client name if available
+        let awsClientId = clientId
+        if (option.backupType === 'aws' && option.clientName && option.clientName !== 'unknown') {
+            awsClientId = option.clientName
+        }
+        
+        // Create context for the coordinator (using same structure as processor)
+        const auth: timer.backup.Auth = {
+            token: option.backupAuths?.aws,
+            login: option.backupLogin?.aws
+        }
+        
         const context: timer.backup.CoordinatorContext<unknown> = {
-            cid: clientId,
-            auth: { token: option.backupAuths?.aws },
+            cid: awsClientId,
+            auth,
             ext: option.backupExts?.aws,
             cache: {},
             handleCacheChanged: async () => {
@@ -281,56 +303,6 @@ export class BackgroundSyncService {
         }
     }
     
-    /**
-     * Handle remote updates from other clients
-     */
-    private handleRemoteUpdate(data: any): void {
-        if (!data.rows || !Array.isArray(data.rows)) {
-            return
-        }
-        
-        console.log(`BackgroundSyncService: Received ${data.rows.length} remote updates`)
-        
-        // Merge remote data into local database
-        this.mergeRemoteData(data.rows)
-    }
-    
-    /**
-     * Merge remote data into local database
-     */
-    private async mergeRemoteData(remoteRows: timer.backup.Row[]): Promise<void> {
-        try {
-            const localClientId = await metaService.getCid()
-            
-            for (const remoteRow of remoteRows) {
-                // Skip our own data
-                if (remoteRow.cid === localClientId) {
-                    continue
-                }
-                
-                const { host, date, focus, time } = remoteRow
-                
-                // Get existing local data
-                const existing = await statDatabase.get(host, date)
-                
-                // Simple conflict resolution: take maximum values
-                const mergedFocus = Math.max(existing.focus || 0, focus || 0)
-                const mergedTime = Math.max(existing.time || 0, time || 0)
-                
-                // Update local data if there's a change
-                if (mergedFocus !== (existing.focus || 0) || mergedTime !== (existing.time || 0)) {
-                    await statDatabase.accumulate(host, date, {
-                        focus: mergedFocus - (existing.focus || 0),
-                        time: mergedTime - (existing.time || 0)
-                    })
-                }
-            }
-            
-            console.log(`BackgroundSyncService: Merged ${remoteRows.length} remote rows`)
-        } catch (error) {
-            console.error('BackgroundSyncService: Error merging remote data:', error)
-        }
-    }
     
     /**
      * Save pending syncs to storage for recovery

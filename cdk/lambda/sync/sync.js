@@ -23,6 +23,7 @@ const EVENT_BUS_NAME = process.env.EVENT_BUS_NAME;
 
 /**
  * Main handler for sync operations
+ * Updated: 2025-01-15 with download all data support
  */
 exports.handler = async (event) => {
   console.log('Received event:', JSON.stringify(event, null, 2));

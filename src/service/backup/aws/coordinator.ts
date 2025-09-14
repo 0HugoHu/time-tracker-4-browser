@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-import { downloadData, listClients, testConnection, updateData, uploadData, type AwsConfig, type ConflictInfo } from "@api/aws"
+import { downloadData, listClients, testConnection, uploadData, type AwsConfig, type ConflictInfo } from "@api/aws"
 import { formatTimeYMD } from "@util/time"
 
 /**
@@ -135,40 +135,42 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
             return
         }
         
-        const config = this.getConfig(context)
-        const sessionId = this.ensureSessionId(context)
-        const batchId = this.getNextBatchId(context)
-        
-        // Convert rows to enhanced format
-        const enhancedRows = rows.map(row => enhanceRow(row, sessionId, batchId))
-        
         try {
+            const config = this.getConfig(context)
+            const sessionId = this.ensureSessionId(context)
+            const batchId = this.getNextBatchId(context)
+            
+            // Convert rows to enhanced format
+            const enhancedRows = rows.map(row => enhanceRow(row, sessionId, batchId))
+            
             const response = await uploadData(config, context.cid, enhancedRows, batchId)
             
-            // Log conflicts for monitoring
+            // Handle conflicts if any
             const conflicts = response.results
-                .filter(r => r.conflicts && r.conflicts.length > 0)
-                .flatMap(r => r.conflicts!)
+                ?.filter(r => r.conflicts && r.conflicts.length > 0)
+                ?.flatMap(r => r.conflicts!) || []
             
             if (conflicts.length > 0) {
-                console.warn(`AWS: Resolved ${conflicts.length} conflicts during upload:`, conflicts)
+                console.warn(`AWS: Resolved ${conflicts.length} conflicts during upload`)
                 await this.handleConflicts(context, conflicts)
             }
             
-            // Update sync timestamp
+            // Update sync timestamp on success
             context.cache.lastSyncTimestamp = Date.now()
             await context.handleCacheChanged()
             
             console.log(`AWS: Successfully uploaded ${response.successful}/${response.processed} rows`)
             
+            // Throw error if some rows failed
             if (response.failed > 0) {
-                const failures = response.results.filter(r => r.error)
-                console.error('AWS: Upload failures:', failures)
-                throw new Error(`${response.failed} rows failed to upload`)
+                const errorMsg = `${response.failed} out of ${response.processed} rows failed to upload`
+                console.error(errorMsg)
+                throw new Error(errorMsg)
             }
         } catch (error) {
-            console.error('AWS: Failed to upload data:', error)
-            throw new Error(`Failed to upload data: ${error instanceof Error ? error.message : error}`)
+            const errorMsg = error instanceof Error ? error.message : String(error)
+            console.error('AWS: Upload failed:', errorMsg)
+            throw new Error(`AWS upload failed: ${errorMsg}`)
         }
     }
 
@@ -242,17 +244,15 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
             return
         }
         
-        const config = this.getConfig(context)
-        const sessionId = this.ensureSessionId(context)
-        const batchId = this.getNextBatchId(context)
-        
-        // Convert rows to enhanced format
-        const enhancedRows = rows.map(row => enhanceRow(row, sessionId, batchId))
-        
         try {
-            const response = await updateData(config, context.cid, enhancedRows)
+            const config = this.getConfig(context)
+            const sessionId = this.ensureSessionId(context)
+            const batchId = this.getNextBatchId(context)
             
-            console.log(`AWS: Incremental sync completed: ${response.successful}/${response.processed} rows`)
+            // Convert rows to enhanced format
+            const enhancedRows = rows.map(row => enhanceRow(row, sessionId, batchId))
+            
+            const response = await uploadData(config, context.cid, enhancedRows, batchId)
             
             if (response.failed > 0) {
                 console.warn(`AWS: ${response.failed} rows failed in incremental sync`)

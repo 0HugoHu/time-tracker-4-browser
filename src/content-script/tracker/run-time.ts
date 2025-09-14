@@ -33,6 +33,11 @@ class RunTimeTracker {
     }
 
     private collect() {
+        // Skip tracking if extension context is invalidated
+        if (!chrome.runtime?.id) {
+            return
+        }
+
         const now = Date.now()
         const lastTime = this.start
 

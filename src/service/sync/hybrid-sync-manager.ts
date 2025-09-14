@@ -24,6 +24,7 @@ export class HybridSyncManager {
     private websocket: WebSocket | null = null
     private pollInterval: NodeJS.Timeout | null = null
     private reconnectTimeout: NodeJS.Timeout | null = null
+    private heartbeatInterval: NodeJS.Timeout | null = null
     private backoffMultiplier = 1
     private readonly maxBackoffMs = 60000 // 1 minute max backoff
     private readonly baseBackoffMs = 1000 // 1 second base backoff
@@ -77,6 +78,7 @@ export class HybridSyncManager {
         
         this.closeWebSocket()
         this.stopPolling()
+        this.stopHeartbeat()
         this.clearReconnectTimeout()
         this.connectionState = 'disconnected'
         this.emit('sync-status', { connected: false, method: 'none' })
@@ -130,12 +132,27 @@ export class HybridSyncManager {
             this.backoffMultiplier = 1 // Reset backoff on successful connection
             this.stopPolling() // Stop polling when WebSocket works
             this.emit('sync-status', { connected: true, method: 'websocket' })
+            
+            // Start heartbeat to keep connection alive
+            this.startHeartbeat()
         }
         
         this.websocket.onmessage = (event) => {
             try {
-                const syncEvent: SyncEvent = JSON.parse(event.data)
-                this.handleSyncEvent(syncEvent)
+                const message = JSON.parse(event.data)
+                
+                // Handle WebSocket protocol messages (ping/pong, etc.)
+                if (message.action) {
+                    this.handleProtocolMessage(message)
+                } 
+                // Handle sync events
+                else if (message.type) {
+                    this.handleSyncEvent(message as SyncEvent)
+                }
+                // Handle unknown message format
+                else {
+                    console.warn('HybridSyncManager: Message has no type or action field:', message)
+                }
             } catch (error) {
                 console.error('HybridSyncManager: Error parsing WebSocket message:', error)
             }
@@ -279,10 +296,30 @@ export class HybridSyncManager {
     }
     
     /**
+     * Handle WebSocket protocol messages (ping/pong, subscribe, etc.)
+     */
+    private handleProtocolMessage(message: any): void {
+        switch (message.action) {
+            case 'pong':
+                // Handle pong response to keep-alive ping
+                break
+            case 'subscribed':
+                // Handle subscription confirmation
+                break
+            default:
+                // Ignore unknown protocol messages
+                break
+        }
+    }
+    
+    /**
      * Handle incoming sync events
      */
     private handleSyncEvent(event: SyncEvent): void {
-        console.log('HybridSyncManager: Received sync event:', event.type)
+        if (!event || !event.type) {
+            console.warn('HybridSyncManager: Invalid sync event:', event)
+            return
+        }
         
         switch (event.type) {
             case 'data-updated':
@@ -314,7 +351,12 @@ export class HybridSyncManager {
      * Subscribe to ping to keep connection alive
      */
     private startHeartbeat(): void {
-        setInterval(() => {
+        // Clear any existing heartbeat
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval)
+        }
+        
+        this.heartbeatInterval = setInterval(() => {
             if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
                 this.websocket.send(JSON.stringify({
                     action: 'ping',
@@ -322,6 +364,16 @@ export class HybridSyncManager {
                 }))
             }
         }, 30000) // Ping every 30 seconds
+    }
+    
+    /**
+     * Stop heartbeat
+     */
+    private stopHeartbeat(): void {
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval)
+            this.heartbeatInterval = null
+        }
     }
     
     /**

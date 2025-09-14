@@ -18,7 +18,13 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
         try {
             // Check if extension context is still valid
             if (!chrome.runtime?.id) {
-                console.warn('Extension context invalidated, ignoring message:', code)
+                // Only log once per minute to avoid spam
+                const now = Date.now()
+                const lastWarning = (window as any).__lastContextWarning || 0
+                if (now - lastWarning > 60000) { // 60 seconds
+                    console.warn('Extension context invalidated - tracking paused. Reload extension to resume.')
+                    ;(window as any).__lastContextWarning = now
+                }
                 resolve(undefined)
                 return
             }
@@ -28,7 +34,13 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
                 
                 // Check if context was invalidated during the call
                 if (lastError?.includes('Extension context invalidated') || lastError?.includes('message port closed')) {
-                    console.warn('Extension context invalidated during message send:', code)
+                    // Use same throttled logging
+                    const now = Date.now()
+                    const lastWarning = (window as any).__lastContextWarning || 0
+                    if (now - lastWarning > 60000) {
+                        console.warn('Extension context invalidated - tracking paused. Reload extension to resume.')
+                        ;(window as any).__lastContextWarning = now
+                    }
                     resolve(undefined)
                     return
                 }
@@ -42,7 +54,13 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
             
             // Handle context invalidation gracefully
             if (errorMsg.includes('Extension context invalidated') || errorMsg.includes('message port closed')) {
-                console.warn('Extension context invalidated, ignoring message:', code)
+                // Use same throttled logging
+                const now = Date.now()
+                const lastWarning = (window as any).__lastContextWarning || 0
+                if (now - lastWarning > 60000) {
+                    console.warn('Extension context invalidated - tracking paused. Reload extension to resume.')
+                    ;(window as any).__lastContextWarning = now
+                }
                 resolve(undefined)
                 return
             }
