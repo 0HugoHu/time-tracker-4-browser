@@ -60,24 +60,6 @@ export type OptionMessage = {
         weekStart: string
         weekStartAsNormal: string
     }
-    dailyLimit: {
-        prompt: string
-        reminder: string
-        level: {
-            [level in timer.limit.RestrictionLevel]: string
-        } & {
-            label: string
-            passwordLabel: string
-            verificationLabel: string
-            verificationDifficulty: {
-                [diff in timer.limit.VerificationDifficulty]: string
-            }
-            strictTitle: string
-            strictContent: string
-            pswFormLabel: string
-            pswFormAgain: string
-        }
-    }
     backup: {
         title: string
         type: string

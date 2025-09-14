@@ -7,10 +7,9 @@
 
 import { executeScript } from "@api/chrome/script"
 import { createTab } from "@api/chrome/tab"
-import { ANALYSIS_ROUTE, LIMIT_ROUTE } from "@app/router/constants"
+import { ANALYSIS_ROUTE } from "@app/router/constants"
 import optionHolder from "@service/components/option-holder"
 import whitelistHolder from "@service/components/whitelist-holder"
-import limitService from "@service/limit-service"
 import siteService from "@service/site-service"
 import { saveTimelineEvent } from '@service/timeline-service'
 import { getAppPageUrl } from "@util/constant/url"
@@ -30,14 +29,6 @@ const handleOpenAnalysisPage = (sender: ChromeMessageSender) => {
     createTab({ url: newTabUrl, index: newTabIndex })
 }
 
-const handleOpenLimitPage = (sender: ChromeMessageSender) => {
-    const { tab, url } = sender || {}
-    if (!url) return
-    const newTabUrl = getAppPageUrl(LIMIT_ROUTE, { url })
-    const tabIndex = tab?.index
-    const newTabIndex = tabIndex ? tabIndex + 1 : undefined
-    createTab({ url: newTabUrl, index: newTabIndex })
-}
 
 const handleInjected = async (sender: ChromeMessageSender) => {
     const tabId = sender?.tab?.id
@@ -61,10 +52,7 @@ export default function init(dispatcher: MessageDispatcher) {
             const option = await optionHolder.get()
             return !!option.printInConsole
         })
-        .register<string, timer.limit.Item[]>('cs.getLimitedRules', url => limitService.getLimited(url))
-        .register<string, timer.limit.Item[]>('cs.getRelatedRules', url => limitService.getRelated(url))
         .register<void, void>('cs.openAnalysis', (_, sender) => handleOpenAnalysisPage(sender))
-        .register<void, void>('cs.openLimit', (_, sender) => handleOpenLimitPage(sender))
         .register<void, void>('cs.onInjected', async (_, sender) => handleInjected(sender))
         // Get sites which need to count run time
         .register<string, timer.site.SiteKey | null>('cs.getRunSites', async url => {

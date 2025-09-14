@@ -66,12 +66,6 @@ declare namespace timer.backup {
 
     type Type =
         | 'none'
-        | 'gist'
-        // Sync into Obsidian via its plugin Local REST API
-        // @since 1.9.4
-        | 'obsidian_local_rest_api'
-        // @since 2.4.5
-        | 'web_dav'
         // AWS real-time sync
         // @since 3.7.0
         | 'aws'

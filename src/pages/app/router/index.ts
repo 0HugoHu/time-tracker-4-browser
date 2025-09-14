@@ -8,7 +8,7 @@
 import metaService from "@service/meta-service"
 import { type App } from "vue"
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router"
-import { ANALYSIS_ROUTE, DASHBOARD_ROUTE, LIMIT_ROUTE, MERGE_ROUTE, OPTION_ROUTE, REPORT_ROUTE } from "./constants"
+import { ANALYSIS_ROUTE, DASHBOARD_ROUTE, MERGE_ROUTE, OPTION_ROUTE, REPORT_ROUTE } from "./constants"
 
 const dataRoutes: RouteRecordRaw[] = [
     {
@@ -29,6 +29,9 @@ const dataRoutes: RouteRecordRaw[] = [
     }, {
         path: '/data/manage',
         component: () => import('../components/DataManage')
+    }, {
+        path: '/data/backup-sync',
+        component: () => import('../components/BackupSync')
     }
 ]
 
@@ -39,9 +42,6 @@ const behaviorRoutes: RouteRecordRaw[] = [
     }, {
         path: '/behavior/habit',
         component: () => import('../components/Habit'),
-    }, {
-        path: LIMIT_ROUTE,
-        component: () => import('../components/Limit'),
     }
 ]
 
@@ -67,10 +67,7 @@ const additionalRoutes: RouteRecordRaw[] = [
 const otherRoutes: RouteRecordRaw[] = [
     {
         path: '/other',
-        redirect: '/other/help'
-    }, {
-        path: '/other/help',
-        component: () => import('../components/HelpUs'),
+        redirect: '/other/about'
     }, {
         path: '/other/about',
         component: () => import('../components/About'),

@@ -7,7 +7,6 @@
 
 import BaseDatabase from "@db/common/base-database"
 import StoragePromise from "@db/common/storage-promise"
-import limitDatabase from "@db/limit-database"
 import mergeRuleDatabase from "@db/merge-rule-database"
 import periodDatabase from "@db/period-database"
 import siteCateDatabase from "@db/site-cate-database"
@@ -28,7 +27,6 @@ function initDatabase(): BaseDatabase[] {
     const result: BaseDatabase[] = [
         statDatabase,
         periodDatabase,
-        limitDatabase,
         mergeRuleDatabase,
         whitelistDatabase,
         siteCateDatabase,

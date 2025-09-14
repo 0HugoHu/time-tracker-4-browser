@@ -31,3 +31,5 @@ aaa
 user-chart.svg
 test.log
 /cdk/cdk.out/
+/cdk/bin/
+/.claude/settings.local.json

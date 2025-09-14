@@ -11,8 +11,6 @@ import { type JSX } from "vue/jsx-runtime"
 import { type OptionCategory, type OptionInstance } from "./common"
 import AccessibilityOption from "./components/AccessibilityOption"
 import AppearanceOption from "./components/AppearanceOption"
-import BackupOption from './components/BackupOption'
-import LimitOption from './components/LimitOption'
 import PopupOption from "./components/PopupOption"
 import StatisticsOption from "./components/StatisticsOption"
 import Select from "./Select"
@@ -24,8 +22,6 @@ const _default = defineComponent(() => {
         appearance: ref(),
         statistics: ref(),
         popup: ref(),
-        backup: ref(),
-        dailyLimit: ref(),
         accessibility: ref(),
     }
 
@@ -35,9 +31,7 @@ const _default = defineComponent(() => {
         appearance: () => <AppearanceOption ref={paneRefMap.appearance} />,
         statistics: () => <StatisticsOption ref={paneRefMap.statistics} />,
         popup: () => <PopupOption ref={paneRefMap.popup} />,
-        dailyLimit: () => <LimitOption ref={paneRefMap.dailyLimit} />,
         accessibility: () => <AccessibilityOption ref={paneRefMap.accessibility} />,
-        backup: () => <BackupOption ref={paneRefMap.backup} />,
     }
 
     const handleReset = (cate: OptionCategory) => paneRefMap[cate]?.value?.reset?.()

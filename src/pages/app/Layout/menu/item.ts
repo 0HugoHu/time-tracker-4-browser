@@ -62,6 +62,10 @@ export const MENUS: MenuGroup[] = [{
         title: msg => msg.menu.dataClear,
         route: '/data/manage',
         icon: Database
+    }, {
+        title: _ => 'AWS Backup Sync',
+        route: '/data/backup-sync',
+        icon: SetUp
     }]
 }, {
     title: msg => msg.menu.behavior,
@@ -72,10 +76,6 @@ export const MENUS: MenuGroup[] = [{
         route: '/behavior/habit',
         icon: Aim,
         mobile: true,
-    }, {
-        title: msg => msg.menu.limit,
-        route: '/behavior/limit',
-        icon: Timer
     }]
 }, {
     title: msg => msg.menu.additional,
@@ -108,10 +108,6 @@ export const MENUS: MenuGroup[] = [{
         href: getGuidePageUrl(),
         icon: Memo,
         index: '_guide',
-    }, {
-        title: msg => msg.menu.helpUs,
-        route: '/other/help',
-        icon: HelpFilled,
     }, {
         title: msg => msg.menu.about,
         route: '/other/about',

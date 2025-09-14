@@ -3,7 +3,6 @@ import { getWindow } from "@api/chrome/window"
 import optionHolder from "@service/components/option-holder"
 import whitelistHolder from "@service/components/whitelist-holder"
 import itemService, { type ItemIncContext } from "@service/item-service"
-import limitService from "@service/limit-service"
 import periodService from "@service/period-service"
 import { IS_ANDROID } from "@util/constant/environment"
 import { extractHostname } from "@util/pattern"
@@ -17,13 +16,7 @@ async function handleTime(context: ItemIncContext, timeRange: [number, number], 
     const focusTime = end - start
     // 1. Save async
     await itemService.addFocusTime(context, focusTime)
-    // 2. Process limit
-    const { limited, reminder } = await limitService.addFocusTime(host, url, focusTime)
-    // If time limited after this operation, send messages
-    limited?.length && sendLimitedMessage(limited)
-    // If need to reminder, send messages
-    reminder?.items?.length && tabId && sendMsg2Tab(tabId, 'limitReminder', reminder)
-    // 3. Add period time
+    // 2. Add period time
     await periodService.add(start, focusTime)
     return focusTime
 }
@@ -65,25 +58,9 @@ async function tabNotActive(tabId: number | undefined): Promise<boolean> {
     return !tab?.active
 }
 
-async function sendLimitedMessage(items: timer.limit.Item[]) {
-    const tabs = await listTabs()
-    if (!tabs?.length) return
-    for (const tab of tabs) {
-        try {
-            const { id } = tab
-            id && await sendMsg2Tab(id, 'limitTimeMeet', items)
-        } catch {
-            /* Ignored */
-        }
-    }
-}
 
 async function handleVisit(context: ItemIncContext) {
     await itemService.increaseVisit(context)
-    const { host, url } = context
-    const metLimits = await limitService.incVisit(host, url)
-    // If time limited after this operation, send messages
-    metLimits?.length && sendLimitedMessage(metLimits)
 }
 
 async function handleIncVisitEvent(param: { host: string, url: string }, sender: ChromeMessageSender): Promise<void> {

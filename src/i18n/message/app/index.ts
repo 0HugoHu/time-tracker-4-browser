@@ -11,7 +11,6 @@ import itemMessages, { type ItemMessage } from "@i18n/message/common/item"
 import metaMessages, { type MetaMessage } from "@i18n/message/common/meta"
 import sharedMessages, { type SharedMessage } from "@i18n/message/common/shared"
 import baseMessages, { type BaseMessage } from "../common/base"
-import limitModalMessages, { type ModalMessage } from "../cs/modal"
 import { merge, type MessageRoot } from "../merge"
 import aboutMessages, { type AboutMessage } from "./about"
 import analysisMessages, { type AnalysisMessage } from "./analysis"
@@ -19,7 +18,6 @@ import dashboardMessages, { type DashboardMessage } from "./dashboard"
 import dataManageMessages, { type DataManageMessage } from "./data-manage"
 import habitMessages, { type HabitMessage } from "./habit"
 import helpUsMessages, { type HelpUsMessage } from "./help-us"
-import limitMessages, { type LimitMessage } from "./limit"
 import menuMessages, { type MenuMessage } from "./menu"
 import mergeRuleMessages, { type MergeRuleMessage } from "./merge-rule"
 import operationMessages, { type OperationMessage } from './operation'
@@ -41,7 +39,6 @@ export type AppMessage = {
     analysis: AnalysisMessage
     menu: MenuMessage
     habit: HabitMessage
-    limit: LimitMessage
     siteManage: SiteManageMessage
     operation: OperationMessage
     dashboard: DashboardMessage
@@ -51,7 +48,6 @@ export type AppMessage = {
     button: ButtonMessage
     meta: MetaMessage
     base: BaseMessage
-    limitModal: ModalMessage
 }
 
 const MESSAGE_ROOT: MessageRoot<AppMessage> = {
@@ -66,7 +62,6 @@ const MESSAGE_ROOT: MessageRoot<AppMessage> = {
     analysis: analysisMessages,
     menu: menuMessages,
     habit: habitMessages,
-    limit: limitMessages,
     siteManage: siteManageManages,
     operation: operationMessages,
     dashboard: dashboardMessages,
@@ -76,7 +71,6 @@ const MESSAGE_ROOT: MessageRoot<AppMessage> = {
     button: buttonMessages,
     meta: metaMessages,
     base: baseMessages,
-    limitModal: limitModalMessages,
 }
 
 const _default = merge<AppMessage>(MESSAGE_ROOT)

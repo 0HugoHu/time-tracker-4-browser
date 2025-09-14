@@ -10,9 +10,6 @@ import optionHolder from "@service/components/option-holder"
 import itemService from "@service/item-service"
 import metaService from "@service/meta-service"
 import { formatTimeYMD, getBirthday } from "@util/time"
-import GistCoordinator from "./gist/coordinator"
-import ObsidianCoordinator from "./obsidian/coordinator"
-import WebDAVCoordinator from "./web-dav/coordinator"
 import AwsCoordinator from "./aws/coordinator"
 
 export type AuthCheckResult = {
@@ -151,9 +148,6 @@ class Processor {
     constructor() {
         this.coordinators = {
             none: null as unknown as timer.backup.Coordinator<never>,
-            gist: new GistCoordinator(),
-            obsidian_local_rest_api: new ObsidianCoordinator(),
-            web_dav: new WebDAVCoordinator(),
             aws: new AwsCoordinator(),
         }
     }

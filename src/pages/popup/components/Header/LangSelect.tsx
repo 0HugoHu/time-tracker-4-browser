@@ -74,12 +74,6 @@ const LangSelect = defineComponent(() => {
                         >
                             {t(optionMessages, { key: m => m.appearance.locale.default })}
                         </ElDropdownItem>
-                        <ElDropdownItem
-                            onClick={() => createTab(CROWDIN_HOMEPAGE)}
-                            divided
-                        >
-                            {tPopup(msg => msg.menu.helpUs)}
-                        </ElDropdownItem>
                     </ElDropdownMenu>
                 )
             }}

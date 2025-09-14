@@ -17,7 +17,6 @@ import initBrowserAction from "./browser-action-manager"
 import initCsHandler from "./content-script-handler"
 import initDataCleaner from "./data-cleaner"
 import handleInstall from "./install-handler"
-import initLimitProcessor from "./limit-processor"
 import MessageDispatcher from "./message-dispatcher"
 import VersionMigrator from "./migrator"
 import initSidePanel from "./side-panel"
@@ -40,8 +39,6 @@ initDataCleaner()
 
 const messageDispatcher = new MessageDispatcher()
 
-// Limit processor
-initLimitProcessor(messageDispatcher)
 
 // Content-script's request handler
 initCsHandler(messageDispatcher)

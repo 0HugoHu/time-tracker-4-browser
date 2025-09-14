@@ -7,7 +7,6 @@
 
 import { sendMsg2Runtime } from "@api/chrome/runtime"
 import { initLocale } from "@i18n"
-import processLimit from "./limit"
 import printInfo from "./printer"
 import processTimeline from './timeline'
 import NormalTracker from "./tracker/normal"
@@ -72,7 +71,6 @@ async function main() {
     await initLocale()
     const needPrintInfo = await sendMsg2Runtime('cs.printTodayInfo')
     !!needPrintInfo && printInfo(host)
-    await processLimit(url)
 
     processTimeline()
 

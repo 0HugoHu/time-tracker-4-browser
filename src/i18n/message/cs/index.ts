@@ -1,4 +1,3 @@
-import limitMessages, { type LimitMessage } from "../app/limit"
 import menuMessages, { type MenuMessage } from "../app/menu"
 import calendarMessages, { type CalendarMessage } from "../common/calendar"
 import metaMessages, { type MetaMessage } from "../common/meta"
@@ -10,7 +9,6 @@ export type CsMessage = {
     console: ConsoleMessage
     modal: ModalMessage
     meta: MetaMessage
-    limit: LimitMessage
     menu: MenuMessage
     calendar: CalendarMessage
 }
@@ -19,7 +17,6 @@ const CHILD_MESSAGES: MessageRoot<CsMessage> = {
     console: consoleMessages,
     modal: modalMessages,
     meta: metaMessages,
-    limit: limitMessages,
     menu: menuMessages,
     calendar: calendarMessages,
 }
