@@ -81,10 +81,10 @@
             "fileNotSelected": "File not selected",
             "conflictNotSelected": "Conflict resolution not selected"
         },
-        "paramError": "The parameter is wrong, please check!",
+        "paramError": "Invalid parameter detected. Please verify the input.",
         "deleteConfirm": "A total of {count} records have been filtered out. Do you want to delete them all?",
         "migrationAlert": "Migrate data between browsers using import and export",
-        "importError": "Wrong file extension"
+        "importError": "Unsupported file format. Please select a valid data file."
     },
     "ja": {
         "totalMemoryAlert": "ブラウザは、データを保存するために各拡張機能に {size}MB のメモリを提供します",

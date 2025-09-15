@@ -4,7 +4,7 @@
             "focusAverage": "平均每天 {value}"
         },
         "period": {
-            "title": "不同时段的访问习惯",
+            "title": "时段使用模式分析",
             "busiest": "每天最繁忙时段",
             "idle": "最长空闲时段",
             "chartType": {
@@ -20,7 +20,7 @@
             }
         },
         "site": {
-            "title": "网站访问习惯",
+            "title": "网站使用行为分析",
             "histogramTitle": "最长访问 TOP {n}",
             "exclusiveToday": "今天的数据不计入平均值",
             "countTotal": "总计访问次数/网站数",
@@ -42,7 +42,7 @@
             "focusAverage": "平均每日 {value}"
         },
         "period": {
-            "title": "不同時段的使用習慣",
+            "title": "時段使用模式分析",
             "busiest": "每日最忙碌時段",
             "idle": "最長閒置時段",
             "chartType": {
@@ -58,7 +58,7 @@
             }
         },
         "site": {
-            "title": "網站使用習慣",
+            "title": "網站使用行為分析",
             "histogramTitle": "最常造訪 TOP {n}",
             "exclusiveToday": "今日資料不列入平均計算",
             "countTotal": "總造訪次數/網站數量",
@@ -80,7 +80,7 @@
             "focusAverage": "Average {value} per day"
         },
         "period": {
-            "title": "Habit of time periods",
+            "title": "Usage Pattern Analysis by Time Period",
             "busiest": "Busiest time of day",
             "idle": "Longest idle period",
             "chartType": {
@@ -96,7 +96,7 @@
             }
         },
         "site": {
-            "title": "Habit of websites",
+            "title": "Website Usage Behavior Analysis",
             "histogramTitle": "TOP {n} most visited",
             "exclusiveToday": "Today's data is not included in the average",
             "countTotal": "Total visits/sites",

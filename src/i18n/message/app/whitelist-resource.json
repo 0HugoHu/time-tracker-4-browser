@@ -18,7 +18,7 @@
         "errorInput": "網域名稱格式錯誤"
     },
     "en": {
-        "addConfirmMsg": "{url} won't be counted after added into the whitelist any more.",
+        "addConfirmMsg": "{url} will not be tracked after being added to the whitelist.",
         "removeConfirmMsg": "{url} will be removed from the whitelist.",
         "duplicateMsg": "Duplicated",
         "infoAlertTitle": "You can whitelist sites on this page",

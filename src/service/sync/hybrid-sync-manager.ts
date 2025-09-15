@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Hengyang Zhang
+ * Copyright (c) 2025 @0HugoHu
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
@@ -8,6 +8,7 @@
 import processor from "@service/backup/processor"
 import metaService from "@service/meta-service"
 import optionHolder from "@service/components/option-holder"
+import { backgroundLogger } from "@util/logger"
 
 type SyncEvent = {
     type: 'data-updated' | 'client-connected' | 'sync-status'
@@ -65,7 +66,7 @@ export class HybridSyncManager {
         try {
             await this.connectWebSocket()
         } catch (error) {
-            console.warn('HybridSyncManager: WebSocket connection failed, falling back to polling:', error)
+            backgroundLogger.debug('HybridSyncManager: WebSocket connection failed, falling back to polling:', error)
             this.startPolling()
         }
     }
@@ -151,10 +152,10 @@ export class HybridSyncManager {
                 }
                 // Handle unknown message format
                 else {
-                    console.warn('HybridSyncManager: Message has no type or action field:', message)
+                    backgroundLogger.debug('HybridSyncManager: Message has no type or action field:', message)
                 }
             } catch (error) {
-                console.error('HybridSyncManager: Error parsing WebSocket message:', error)
+                backgroundLogger.debug('HybridSyncManager: Error parsing WebSocket message:', error)
             }
         }
         
@@ -170,7 +171,7 @@ export class HybridSyncManager {
         }
         
         this.websocket.onerror = (error) => {
-            console.error('HybridSyncManager: WebSocket error:', error)
+            backgroundLogger.debug('HybridSyncManager: WebSocket error:', error)
             this.connectionState = 'error'
             this.emit('sync-status', { connected: false, method: 'error', error })
         }
@@ -178,7 +179,7 @@ export class HybridSyncManager {
         // Set a connection timeout
         setTimeout(() => {
             if (this.websocket && this.websocket.readyState === WebSocket.CONNECTING) {
-                console.warn('HybridSyncManager: WebSocket connection timeout')
+                backgroundLogger.debug('HybridSyncManager: WebSocket connection timeout')
                 this.websocket.close()
             }
         }, 10000) // 10 second timeout
@@ -217,7 +218,7 @@ export class HybridSyncManager {
                     }
                 }
             } catch (error) {
-                console.error('HybridSyncManager: Polling error:', error)
+                backgroundLogger.debug('HybridSyncManager: Polling error:', error)
             }
         }, this.pollIntervalMs)
     }
@@ -253,7 +254,7 @@ export class HybridSyncManager {
                 try {
                     await this.connectWebSocket()
                 } catch (error) {
-                    console.warn('HybridSyncManager: Reconnection failed:', error)
+                    backgroundLogger.debug('HybridSyncManager: Reconnection failed:', error)
                     this.scheduleReconnect()
                 }
             }
@@ -291,7 +292,7 @@ export class HybridSyncManager {
                 })
             }
         } catch (error) {
-            console.error('HybridSyncManager: Poll sync error:', error)
+            backgroundLogger.debug('HybridSyncManager: Poll sync error:', error)
         }
     }
     
@@ -317,7 +318,7 @@ export class HybridSyncManager {
      */
     private handleSyncEvent(event: SyncEvent): void {
         if (!event || !event.type) {
-            console.warn('HybridSyncManager: Invalid sync event:', event)
+            backgroundLogger.debug('HybridSyncManager: Invalid sync event:', event)
             return
         }
         
@@ -332,7 +333,7 @@ export class HybridSyncManager {
                 this.emit('sync-status', event.data)
                 break
             default:
-                console.warn('HybridSyncManager: Unknown event type:', event.type)
+                backgroundLogger.debug('HybridSyncManager: Unknown event type:', event.type)
         }
     }
     
@@ -409,7 +410,7 @@ export class HybridSyncManager {
                 try {
                     callback(data)
                 } catch (error) {
-                    console.error(`HybridSyncManager: Error in event callback for ${event}:`, error)
+                    backgroundLogger.debug(`HybridSyncManager: Error in event callback for ${event}:`, error)
                 }
             })
         }

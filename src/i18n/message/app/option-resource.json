@@ -299,7 +299,7 @@
             "locale": {
                 "label": "Language {input}",
                 "default": "Follow browser",
-                "changeConfirm": "The language has been changed successfully, please reload this page!",
+                "changeConfirm": "Language setting has been updated successfully. Please reload the page to apply changes.",
                 "reloadButton": "Reload"
             },
             "printInConsole": {
@@ -412,13 +412,13 @@
             "chartDecal": "{input} Whether to display the chart decal"
         },
         "resetButton": "Reset",
-        "resetSuccess": "Reset to default successfully!",
+        "resetSuccess": "Settings have been reset to default values.",
         "exportButton": "Export Settings",
         "importButton": "Import Settings",
-        "exportSuccess": "Settings exported successfully",
-        "importSuccess": "Settings imported successfully",
-        "importError": "Import failed: Invalid settings file",
-        "importConfirm": "Settings imported successfully, please reload the page to apply changes!",
+        "exportSuccess": "Settings have been exported successfully.",
+        "importSuccess": "Settings have been imported successfully.",
+        "importError": "Import operation failed: Invalid settings file format.",
+        "importConfirm": "Settings have been imported successfully. Please reload the page to apply changes.",
         "reloadButton": "Reload",
         "defaultValue": "Default: {default}"
     },

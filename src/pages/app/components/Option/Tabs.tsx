@@ -27,7 +27,7 @@ const Toolbar = defineComponent<TooltipProps>(props => {
     const handleImport = async () => {
         try {
             const fileContent = await createFileInput()
-            // User cancelled, don't show error message
+            // User cancelled, do not show error message
             if (!fileContent) return
             await importSettings(fileContent)
             ElMessageBox({

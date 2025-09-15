@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024 Hengyang Zhang
+ * Copyright (c) 2025 @0HugoHu
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
@@ -37,8 +37,8 @@ function detectDeviceType(): DeviceType {
     }
 
     // Check for desktop vs laptop indicators
-    // This is tricky as browsers don't expose this directly
-    // We'll make educated guesses based on screen size and other factors
+    // This is challenging as browsers do not expose this information directly
+    // We will make educated guesses based on screen size and other factors
     try {
         if (typeof screen !== 'undefined' && screen.width >= 1920 && screen.height >= 1080) {
             return 'Desktop'
@@ -47,7 +47,7 @@ function detectDeviceType(): DeviceType {
         // screen is not available in background/service worker context
     }
 
-    // Most modern devices that aren't clearly desktop are likely laptops
+    // Most modern devices that are not clearly desktop are likely laptops
     return 'Laptop'
 }
 

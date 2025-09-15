@@ -9,7 +9,7 @@
     },
     "en": {
         "confirmTitle": "Confirmation",
-        "successMsg": "Successfully!"
+        "successMsg": "Operation completed successfully."
     },
     "ja": {
         "confirmTitle": "動作確認",

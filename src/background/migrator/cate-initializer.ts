@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2025 @0HugoHu
+ *
+ * This software is released under the MIT License.
+ * https://opensource.org/licenses/MIT
+ */
+
 import cateService from "@service/cate-service"
 import siteService from "@service/site-service"
 import { Migrator } from "./common"

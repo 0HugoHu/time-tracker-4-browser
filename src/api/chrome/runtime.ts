@@ -72,8 +72,8 @@ export function sendMsg2Runtime<T = any, R = any>(code: timer.mq.ReqCode, data?:
 }
 
 export function onRuntimeMessage<T = any, R = any>(handler: ChromeMessageHandler<T, R>): void {
-    // Be careful!!!
-    // Can't use await/async in callback parameter
+    // Important: Exercise caution
+    // Cannot use await/async in callback parameter
     chrome.runtime.onMessage.addListener((message: timer.mq.Request<T>, sender: chrome.runtime.MessageSender, sendResponse: timer.mq.Callback<R>) => {
         handler(message, sender).then((response: timer.mq.Response<R>) => {
             if (response.code === 'ignore') return

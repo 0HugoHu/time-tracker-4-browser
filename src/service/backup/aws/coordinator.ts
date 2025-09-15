@@ -7,6 +7,7 @@
 
 import { listClients, testConnection, uploadData, type AwsConfig, type ConflictInfo } from "@api/aws"
 import { formatTimeYMD } from "@util/time"
+import { backgroundLogger } from "@util/logger"
 
 /**
  * Cache for AWS coordinator
@@ -100,7 +101,7 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
             const response = await listClients(config, context.cid)
             return response.clients || []
         } catch (error) {
-            console.error('AWS: Failed to list clients:', error)
+            backgroundLogger.debug('AWS: Failed to list clients:', error)
             return []
         }
     }
@@ -141,7 +142,7 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
                 ?.flatMap(r => r.conflicts!) || []
             
             if (conflicts.length > 0) {
-                console.warn(`AWS: Resolved ${conflicts.length} conflicts during upload`)
+                backgroundLogger.debug(`AWS: Resolved ${conflicts.length} conflicts during upload`)
                 await this.handleConflicts(context, conflicts)
             }
             
@@ -154,12 +155,12 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
             // Throw error if some rows failed
             if (response.failed > 0) {
                 const errorMsg = `${response.failed} out of ${response.processed} rows failed to upload`
-                console.error(errorMsg)
+                backgroundLogger.debug(errorMsg)
                 throw new Error(errorMsg)
             }
         } catch (error) {
             const errorMsg = error instanceof Error ? error.message : String(error)
-            console.error('AWS: Upload failed:', errorMsg)
+            backgroundLogger.debug('AWS: Upload failed:', errorMsg)
             throw new Error(`AWS upload failed: ${errorMsg}`)
         }
     }
@@ -191,9 +192,9 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
         context: timer.backup.CoordinatorContext<AwsCache>,
         client: timer.backup.Client
     ): Promise<void> {
-        // For AWS, we don't directly delete data from the backend
+        // For AWS, we do not directly delete data from the backend
         // Instead, we mark the client as inactive or handle it through lifecycle policies
-        console.warn(`AWS: Clear operation for client ${client.id} not implemented - data will be archived automatically`)
+        backgroundLogger.debug(`AWS: Clear operation for client ${client.id} not implemented - data will be archived automatically`)
     }
     
     /**
@@ -245,11 +246,11 @@ export default class AwsCoordinator implements timer.backup.Coordinator<AwsCache
             const response = await uploadData(config, context.cid, enhancedRows, batchId)
             
             if (response.failed > 0) {
-                console.warn(`AWS: ${response.failed} rows failed in incremental sync`)
+                backgroundLogger.debug(`AWS: ${response.failed} rows failed in incremental sync`)
             }
         } catch (error) {
-            console.error('AWS: Incremental sync failed:', error)
-            // Don't throw here - incremental sync failures shouldn't break the app
+            backgroundLogger.debug('AWS: Incremental sync failed:', error)
+            // Do not throw here - incremental sync failures should not break the application
         }
     }
 }

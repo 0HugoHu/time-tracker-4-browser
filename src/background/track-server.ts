@@ -106,7 +106,7 @@ function handleTabGroupEnabled() {
         chrome.tabGroups.onRemoved.removeListener(handleTabGroupRemove)
         chrome.tabGroups.onRemoved.addListener(handleTabGroupRemove)
     } catch (e) {
-        console.warn('failed to handle event: enableTabGroup', e)
+        // TabGroups API not available in this browser version
     }
 }
 

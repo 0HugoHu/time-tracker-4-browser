@@ -175,7 +175,7 @@ class Processor {
             metaService.updateBackUpTime(type, now)
             return success(now)
         } catch (e) {
-            console.error("Error to sync data", e)
+            // Error already handled by return value
             const msg = (e as Error)?.message ?? e?.toString?.()
             return error(msg)
         }

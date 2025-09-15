@@ -8,8 +8,8 @@
         "closeAlert": "您可以在【{appName}】設定中關閉此提示！"
     },
     "en": {
-        "consoleLog": "Today you opened {host} {time} time(s), spending {focus} browsing it.",
-        "closeAlert": "You can disable these notifications in [{appName}] settings!"
+        "consoleLog": "Today you accessed {host} {time} time(s), with a total browsing time of {focus}.",
+        "closeAlert": "These notifications can be disabled in the [{appName}] extension settings."
     },
     "ja": {
         "consoleLog": "本日{host}を{time}回開き、合計{focus}閲覧しました。",

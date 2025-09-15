@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Hengyang Zhang
+ * Copyright (c) 2025 @0HugoHu
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT
@@ -11,6 +11,7 @@ import optionHolder from "@service/components/option-holder"
 import metaService from "@service/meta-service"
 import { formatTimeYMD } from "@util/time"
 import AwsCoordinator from "@service/backup/aws/coordinator"
+import { backgroundLogger } from "@util/logger"
 
 type PendingSync = {
     rows: timer.core.Row[]
@@ -67,8 +68,8 @@ export class BackgroundSyncService {
         // In service workers, we need to use navigator.onLine and periodically check
         // or rely on network request failures to detect offline status
         
-        // For service workers, we can't listen to window events
-        // Instead, we'll check online status periodically and on network failures
+        // For service workers, we cannot listen to window events
+        // Instead, we will check online status periodically and on network failures
         if (typeof window !== 'undefined') {
             // If we're in a window context (not service worker)
             window.addEventListener('online', () => {
@@ -218,7 +219,7 @@ export class BackgroundSyncService {
                     
                     console.log(`BackgroundSyncService: Synced batch ${batch.batchId} (${batch.rows.length} rows)`)
                 } catch (error) {
-                    console.error(`BackgroundSyncService: Failed to sync batch ${batch.batchId}:`, error)
+                    backgroundLogger.debug(`BackgroundSyncService: Failed to sync batch ${batch.batchId}:`, error)
                     
                     batch.retryCount++
                     
@@ -226,7 +227,7 @@ export class BackgroundSyncService {
                         // Too many retries - remove from queue
                         this.syncQueue.shift()
                         this.stats.totalFailed += batch.rows.length
-                        console.error(`BackgroundSyncService: Dropping batch ${batch.batchId} after ${this.maxRetries} retries`)
+                        backgroundLogger.debug(`BackgroundSyncService: Dropping batch ${batch.batchId} after ${this.maxRetries} retries`)
                     } else {
                         // Keep for retry but move to end of queue
                         this.syncQueue.shift()
@@ -324,7 +325,7 @@ export class BackgroundSyncService {
             
             console.log(`BackgroundSyncService: Saved ${this.syncQueue.length} pending syncs`)
         } catch (error) {
-            console.error('BackgroundSyncService: Failed to save pending syncs:', error)
+            backgroundLogger.debug('BackgroundSyncService: Failed to save pending syncs:', error)
         }
     }
     
@@ -352,7 +353,7 @@ export class BackgroundSyncService {
                 await chrome.storage.local.remove('background_sync_pending')
             }
         } catch (error) {
-            console.error('BackgroundSyncService: Failed to load pending syncs:', error)
+            backgroundLogger.debug('BackgroundSyncService: Failed to load pending syncs:', error)
         }
     }
     

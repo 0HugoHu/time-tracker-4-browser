@@ -2,7 +2,7 @@
     "en": {
         "updateVersion": "Update",
         "updateVersionInfo": "Latest version: {version}",
-        "updateVersionInfo4Firefox": "Please update to {version} via about:addons",
+        "updateVersionInfo4Firefox": "Update to version {version} available via about:addons",
         "rate": "Rate Us"
     },
     "zh_CN": {

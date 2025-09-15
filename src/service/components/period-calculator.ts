@@ -11,7 +11,7 @@ import { after, compare, indexOf, keyOf, lastKeyOfLastDate, rowOf, startOfKey } 
 /**
  * @param timestamp current ts
  * @param milliseconds milliseconds
- * @returns results, can't be empty if milliseconds is positive
+ * @returns results, cannot be empty if milliseconds is positive
  */
 export function calculate(timestamp: number, milliseconds: number): timer.period.Result[] {
     if (milliseconds <= 0) return []

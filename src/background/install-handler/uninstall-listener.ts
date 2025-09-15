@@ -14,7 +14,7 @@ async function listen() {
         const uninstallUrl = UNINSTALL_QUESTIONNAIRE[locale] || UNINSTALL_QUESTIONNAIRE['en']
         uninstallUrl && setUninstallURL(uninstallUrl)
     } catch (e) {
-        console.error(e)
+        // Uninstall URL setting failed - not critical
     }
 }
 

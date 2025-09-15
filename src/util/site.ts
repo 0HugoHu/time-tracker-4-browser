@@ -66,7 +66,7 @@ export function siteEqual(a: timer.site.SiteKey | undefined, b: timer.site.SiteK
 }
 
 /**
- * Marked the category ID of sites those don't set up category
+ * Marked the category ID of sites that do not have a category assigned
  */
 export const CATE_NOT_SET_ID = -1
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Hengyang Zhang
+ * Copyright (c) 2025 @0HugoHu
  *
  * This software is released under the MIT License.
  * https://opensource.org/licenses/MIT

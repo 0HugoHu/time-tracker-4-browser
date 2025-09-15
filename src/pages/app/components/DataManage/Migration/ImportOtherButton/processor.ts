@@ -123,7 +123,7 @@ function parseHistoryTrendsUnlimitedLine(line: string, data: { [dateAndHost: str
         try {
             date = formatTimeYMD(parseFloat(tsMaybe.substring(1)))
         } catch {
-            console.error("Invalid line: " + line)
+            // Skip invalid line during import
             return
         }
         const host = extractHostname(url)?.host
